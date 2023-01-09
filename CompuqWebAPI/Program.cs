@@ -4,8 +4,8 @@ using CompuqWebAPI.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("CompuqDB");
-builder.Services.AddDbContextPool<CompuqDBContext>(option => 
-option.UseSqlServer(connectionString));
+builder.Services.AddDbContextPool<CompuqContext>(option => 
+option.UseSqlServer(connectionString, ServiceProviderOptions => ServiceProviderOptions.EnableRetryOnFailure()));
 
 // Add services to the container.
 

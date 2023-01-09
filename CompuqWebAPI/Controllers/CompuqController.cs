@@ -8,17 +8,17 @@ namespace CompuqWebAPI.Controllers
     [ApiController]
     public class CompuqController : ControllerBase
     {
-        private readonly CompuqDBContext _context;
+        private readonly CompuqContext _context;
 
-        public CompuqController(CompuqDBContext context)
+        public CompuqController(CompuqContext context)
         {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Compuq>> Get()
+        public async Task<IEnumerable<Customer>> Get()
         {
-            return await _context.Compuqs.ToListAsync();
+            return await _context.Customers.ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -26,34 +26,34 @@ namespace CompuqWebAPI.Controllers
         {
             if (id < 1)
                 return BadRequest();
-            var compuq = await _context.Compuqs.FirstOrDefaultAsync(m => m.customer_id == id);
-            if (compuq == null)
+            var customer = await _context.Customers.FirstOrDefaultAsync(m => m.CustomerId == id);
+            if (customer == null)
                 return NotFound();
-            return Ok(compuq);
+            return Ok(customer);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Compuq compuq)
+        public async Task<IActionResult> Post(Customer customer)
         {
-            _context.Add(compuq);
+            _context.Add(customer);
             await _context.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(Compuq compuqData)
+        public async Task<IActionResult> Put(Customer customerData)
         {
-            if (compuqData == null || compuqData.customer_id == 0)
+            if (customerData == null || customerData.CustomerId == 0)
                 return BadRequest();
 
-            var compuq = await _context.Compuqs.FindAsync(compuqData.customer_id);
-            if (compuq == null)
+            var customer = await _context.Customers.FindAsync(customerData.CustomerId);
+            if (customer == null)
                 return NotFound();
-            compuq.customer_name = compuqData.customer_name;
-            compuq.phone_number = compuqData.phone_number;
-            compuq.phone_make = compuqData.phone_make;
-            compuq.phone_monthlypay = compuqData.phone_monthlypay;
-            compuq.phone_plan_monthlypay = compuqData.phone_plan_monthlypay;
+            customer.CustomerName = customerData.CustomerName;
+            customer.PhoneNumber = customerData.PhoneNumber;
+            customer.PhoneMake = customerData.PhoneMake;
+            customer.PhoneMonthlypay = customerData.PhoneMonthlypay;
+            customer.PhonePlanMonthlypay = customerData.PhonePlanMonthlypay;
             await _context.SaveChangesAsync();
             return Ok();
         }
@@ -63,10 +63,10 @@ namespace CompuqWebAPI.Controllers
         {
             if (id > 1)
                 return BadRequest();
-            var compuq = _context.Compuqs.FindAsync(id);
-            if (compuq == null)
+            var customer = _context.Customers.FindAsync(id);
+            if (customer.Result == null)
                 return NotFound();
-            _context.Compuqs.Remove(compuq);
+            _context.Customers.Remove(customer.Result);
             await _context.SaveChangesAsync();
             return Ok();
 
