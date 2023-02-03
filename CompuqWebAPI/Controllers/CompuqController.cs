@@ -24,7 +24,7 @@ namespace CompuqWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            if (id < 1)
+            if (id == 0)
                 return BadRequest();
             var customer = await _context.Customers.FirstOrDefaultAsync(m => m.CustomerId == id);
             if (customer == null)
@@ -34,7 +34,9 @@ namespace CompuqWebAPI.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Post(Customer customer)
-        {
+        {   
+            if(customer.CustomerId == 0)
+                return BadRequest();
             _context.Add(customer);
             await _context.SaveChangesAsync();
             return Ok();
@@ -61,8 +63,6 @@ namespace CompuqWebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (id > 1)
-                return BadRequest();
             var customer = _context.Customers.FindAsync(id);
             if (customer.Result == null)
                 return NotFound();
